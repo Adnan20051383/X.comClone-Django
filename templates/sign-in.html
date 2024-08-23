@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{% static 'css/signin-style.css' %}">
+</head>
+<body>
+
+    <form method="post" style="text-align: center">
+        {% csrf_token %}
+        <i><img src="{% static 'img/default.png' %}" style="width: 100px; height: 100px"></i>
+        <h2>Login</h2>
+        <!-- Username Field -->
+        <div>
+            <label>Username:</label>
+            {{ form.username }}
+            {% if form.username.errors %}
+                <ul class="errorlist">
+                    {% for error in form.username.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <!-- Password Field -->
+        <div>
+            <label>Password:</label>
+            {{ form.password }}
+            {% if form.password.errors %}
+                <ul class="errorlist">
+                    {% for error in form.password.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <button type="submit">Login</button>
+         <p>Don't have an account? <a href="{% url 'sign-up' %}">Sign up here</a>.</p>
+    </form>
+
+
+</body>
+</html>

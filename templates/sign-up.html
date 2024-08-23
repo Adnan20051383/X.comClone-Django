@@ -1,0 +1,71 @@
+<!-- templates/contact.html -->
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <title>Contact Form</title>
+    <link rel="stylesheet" href="{% static 'css/signup-style.css' %}">
+</head>
+<body>
+
+    <form method="post" style="text-align: center">
+        {% csrf_token %}
+        <i><img src="{% static 'img/default.png' %}" style="width: 100px; height: 100px"></i>
+        <h2>Sign Up</h2>
+        <!-- Name Field -->
+        <div>
+            <label>Username:</label>
+            {{ form.username }}
+            {% if form.username.errors %}
+                <ul class="errorlist">
+                    {% for error in form.username.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <!-- Email Field -->
+        <div>
+            <label>Email:</label>
+            {{ form.email }}
+            {% if form.email.errors %}
+                <ul class="errorlist">
+                    {% for error in form.email.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <!-- Password Field -->
+        <div>
+            <label>Password:</label>
+            {{ form.password1 }}
+            {% if form.password1.errors %}
+                <ul class="errorlist">
+                    {% for error in form.password1.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <!-- Password Confirmation Field -->
+        <div>
+            <label>Confirm Password:</label>
+            {{ form.password2 }}
+            {% if form.password2.errors %}
+                <ul class="errorlist">
+                    {% for error in form.password2.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <button type="submit">Submit</button>
+        <p>Have an account? <a href="{% url 'sign-in' %}">Sign In here</a>.</p>
+    </form>
+</body>
+</html>

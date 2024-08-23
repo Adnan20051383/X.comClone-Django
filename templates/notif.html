@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications</title>
+    <link rel="stylesheet" href="{% static 'css/notif-style.css' %}">
+</head>
+<body>
+    <div class="container">
+            <header>
+                <h1>Notifications</h1>
+            </header>
+            <div class="notifications">
+                {% for notif in notifications %}
+                <div class="notification">
+                    <div class="icon">
+                        <img src="..{{ notif.sender.profile.image.url }}" alt="Notification Icon">
+                    </div>
+                    <div class="content">
+                        {% if notif.notification_type == 1 %}
+                        <p class="message"><a style="text-decoration: none" href="{% url 'profile' username=notif.sender.username %}">{{ notif.sender.username }}</a> followed you.</p>
+                        {% elif notif.notification_type == 2 %}
+                        <p class="message"><a style="text-decoration: none" href="{% url 'profile' username=notif.sender.username %}">{{ notif.sender.username }}</a> liked your <a style="text-decoration: none" href="{% url 'tweet-detail' tweet_id=notif.tweet.id %}">tweet</a>.</p>
+                        {% elif notif.notification_type == 3 and notif.tweet.parent_id %}
+                        <p class="message"><a style="text-decoration: none" href="{% url 'profile' username=notif.sender.username %}">{{ notif.sender.username }}</a> <a style="text-decoration: none" href="{% url 'tweet-detail' tweet_id=notif.tweet.id %}">replied</a> on the <a style="text-decoration: none" href="{% url 'tweet-detail' tweet_id=notif.tweet.parent_id %}">tweet</a> </p>
+                        {% endif %}
+                        <p class="time">{{ notif.time_difference_from_now }}</p>
+                    </div>
+                    <form method="post" action="{% url 'delete-notif' notif_id=notif.id %}" class="delete-notif">
+                        {% csrf_token %}
+                        <button type="submit">X</button>
+                    </form>
+                </div>
+                {% endfor %}
+        </div>
+      </div>
+</body>
+</html>

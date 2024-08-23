@@ -1,0 +1,357 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #15202b;
+    color: #e1e8ed;
+    margin: 0;
+    padding: 0;
+}
+
+.profile-container {
+    width: 380px;
+    margin: 20px auto;
+    background-color: #192734;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}
+
+.profile-header {
+    position: relative;
+    background-color: #253341;
+}
+.sign-out-form {
+    position: absolute;
+    top: 140px;
+    right: 1rem;
+    width: fit-content;
+    height: fit-content;
+}
+.sign-out-btn {
+    background-color: tomato;
+    color: #fff;
+    border: none;
+    padding: 4px 16px;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.sign-out-btn:hover {
+    opacity: 0.8;
+}
+.cover-photo {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+}
+
+.profile-image-container {
+    position: absolute;
+    bottom: -30px;
+    left: 20px;
+    border-radius: 50%;
+    border: 4px solid #192734;
+    overflow: hidden;
+}
+
+.profile-image {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+}
+
+.profile-details {
+    padding: 50px 20px 20px;
+    text-align: center;
+}
+
+.profile-name {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 10px 0 5px;
+}
+
+.profile-username {
+    font-size: 14px;
+    color: #8899a6;
+    margin-bottom: 15px;
+}
+
+.profile-bio {
+    font-size: 14px;
+    color: #e1e8ed;
+    margin-bottom: 20px;
+}
+
+.profile-stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.stat {
+    text-align: center;
+}
+.stat a {
+    text-decoration: none;
+    color: white;
+}
+.stat-number {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: #8899a6;
+}
+
+.follow-button {
+    background-color: #1da1f2;
+    color: #fff;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.followed-button {
+    background-color: #06a106;
+    color: #fff;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.followed-button:hover {
+    opacity: 0.8;
+}
+
+.follow-button:hover {
+    background-color: #0d8bce;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #1E1E1E;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+}
+.sidebar.active {
+    transform: translateX(-250px);
+}
+
+.logo {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #0077FF;
+    margin-bottom: 30px;
+}
+
+.navigation {
+    width: 100%;
+}
+.user-info {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    overflow: hidden;
+    align-items: center;
+    padding: 15px 20px;
+    color: #EAEAEA;
+    transition: background-color 0.3s ease;
+    border-radius: 30px;
+}
+.user-info:hover {
+    background-color: #333;
+}
+.user-info h6 {
+    color: #605d5d;
+}
+.nav-link {
+    position: relative;
+    display: block;
+    padding: 15px 20px;
+    color: #EAEAEA;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+.unread-notif {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    background-color: #c62727;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+}
+
+.nav-link:hover {
+    background-color: #333;
+}
+@media (max-width: 768px) {
+    .sidebar {
+        z-index: 2;
+        transform: translateX(-250px);
+        animation-name: close-sidebar;
+        animation-duration: 1s;
+    }
+    .post-container {
+        width: 100%;
+    }
+
+    .sidebar.active {
+        transform: translateX(0);
+        animation-name: show-sidebar;
+        animation-duration: 1s;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    .sidebar-toggle {
+        display: block;
+        z-index: 3;
+    }
+    @keyframes show-sidebar {
+        from {transform: translateX(-250px)}
+        to {transform: translateX(0px)}
+    }
+        @keyframes close-sidebar {
+        from {transform: translateX(0px)}
+        to {transform: translateX(-250px)}
+    }
+}
+
+.hide-behind.active-hide {
+    position: absolute;
+    width: 99vw;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: #121212;
+    opacity: 0.6;
+}
+.hidden {
+    display: none;
+}
+.visible {
+    display: block;
+}
+.sign-out-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #121212;
+    border-radius: 10px;
+    padding: 3rem 4rem;
+    z-index: 5;
+}
+.sign-out-container h3 {
+    margin-bottom: 2rem;
+}
+.sign-out-btn {
+    width: 80px;
+    padding: 0.6rem 0.4rem;
+    color: white;
+    border-radius: 9px;
+    font-size: 1.5rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.sign-out-btn:hover {
+    opacity: 0.8;
+}
+.sign-out-btn:active {
+    opacity: 0.6;
+}
+.leave-btn {
+    background-color: #1e8324;
+}
+.no-leave-btn {
+    background-color: tomato;
+}
+.sidebar-toggle {
+    display: none;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    font-size: 2em;
+    color: #EAEAEA;
+    cursor: pointer;
+}
+.post-container {
+    height: fit-content;
+    background-color: #1E1E1E;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    width: 35%;
+    margin: 0 auto 20px;
+}
+.post-container img {
+    height: 150px;
+}
+.post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.post-header a {
+    text-decoration: none;
+    color: white;
+
+}
+
+.post-header h3 {
+    font-size: 1.5em;
+    margin: 0;
+}
+
+.post-header p {
+    font-size: 0.9em;
+    color: #888;
+}
+.post-header img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.post-content p {
+    font-size: 1.1em;
+    margin-bottom: 15px;
+}
+
+.post-content img,
+.post-content video {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.post-footer {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 15px;
+}

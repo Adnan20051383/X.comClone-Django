@@ -1,0 +1,29 @@
+<html>
+<head>
+    {% load static %}
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="{% static 'css/followers-followings-list-style.css' %}">
+</head>
+<body>
+    <div class="followers-list">
+        <div class="header">
+            <h1>{{title}}</h1>
+            <h3>number of {{title}} : {{follow_count}}</h3>
+        </div>
+    {% for follower in followers %}
+    <div class="follower-item">
+        <a href="{% url 'profile' username=follower.username %}">
+            <img src="..{{ follower.profile.image.url }}" alt=" follower.username's profile image" class="profile-image">
+        </a>
+        <div class="follower-info">
+            <a href="{% url 'profile' username=follower.username %}" class="username">{{ follower.username }}</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+</body>
+</html>
+
+
+

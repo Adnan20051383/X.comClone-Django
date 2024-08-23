@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="{% static 'css/home-style.css' %}">
+</head>
+<body>
+    {% if message %}
+    <div class="messages">
+
+            {% for msg in message %}
+                <h4>{{ msg }}</h4>
+            {% endfor %}
+    </div>
+    {% endif %}
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo">
+                <img style="width: 100px; height: 100px; border-radius: 5px" src="{% static 'img/default.png' %}">
+            </div>
+            <nav class="navigation">
+                <a href="#" class="nav-link">Home</a>
+                {% if notifications > 0 %}
+                <a href="{% url 'notifications' %}" class="nav-link">Notification <p class="unread-notif">{{ notifications }}</p></a>
+                {% else %}
+                <a href="{% url 'notifications' %}" class="nav-link">Notification</a>
+                {% endif %}
+                <a href="{% url 'profile' username=authenticated_user.username %}" class="nav-link">Profile</a>
+                <a href="#" class="nav-link">Messages</a>
+                <a href="#" class="nav-link">Settings</a>
+                <a onclick="openSignout()" href="#" class="nav-link">Logout</a>
+
+                <div class="user-info">
+                    <div class="user-info-img">
+                        <img style="width: 50px; height: 50px; border-radius: 50%" src="..{{authenticated_user.profile.image.url}}" alt="llll">
+                    </div>
+                    <div class="user-info-text">
+                        <h4>{{ authenticated_user.profile.first_name}} {{ authenticated_user.profile.last_name }}</h4>
+                        <h6>@{{ authenticated_user.username }}</h6>
+                    </div>
+                </div>
+            </nav>
+            <div class="hide-behind">
+            </div>
+        </aside>
+        <div class="sign-out-container hidden">
+            <h3>Do You Want To Log Out?</h3>
+            <div style="display: flex; justify-content: space-evenly; align-items: center;">
+                <form method="post" action="{% url 'sign-out' %}"> {% csrf_token %}<button type="submit" class="sign-out-btn leave-btn">Yes</button>
+                </form>
+                <button onclick="openSignout()" class="sign-out-btn no-leave-btn">No</button>
+            </div>
+        </div>
+        <div onclick="sidebarShow()" class="sidebar-toggle" id="sidebarToggle">&#9776;</div>
+
+        <div class="main-content">
+            <header class="header">
+                <input type="text" class="search-bar" placeholder="Search users...">
+            </header>
+
+            <section class="content">
+                <h2>Make your Own Tweet</h2>
+                <button onclick="openCreatePost()" class="make-tweet-btn">Create a Tweet</button>
+
+                <!-- Post Container -->
+                {% for stream in streams %}
+                    <div  class="post-container">
+                        <div class="post-header">
+                            <div style="display: flex; justify-content: space-evenly; align-items: center; gap: 1rem">
+                                <a href="{% url 'profile' username=stream.tweet.user.username %}"><img alt="sss" src="..{{ stream.followed.profile.image.url }}"></a>
+                                <a href="{% url 'profile' username=stream.tweet.user.username %}"><h3>{{ stream.tweet.user.profile.first_name }}</h3></a>
+                            </div>
+                            <p>@{{ stream.tweet.user.username }} · {{ stream.time_difference_from_now }}</p>
+                        </div>
+                        <div class="post-content">
+                            <p onclick="show_tweet({{ stream.tweet.id }})">{{ stream.tweet.tweet }}</p>
+                            {% if stream.tweet.image %}
+                            <img onclick="show_tweet({{ stream.tweet.id }})" style="height: 400px" src="..{{ stream.tweet.image.url }}" alt="Post Image">
+                            {% endif %}
+                        </div>
+                        <div class="post-footer">
+                            <form method="post" action="{% url 'like_tweet' tweet_id=stream.tweet.id %}">
+                                {% csrf_token %}
+                            <button class="like-button {% if stream.tweet.id in liked_tweets %} liked {% endif %}" id="heart-button">
+                                <svg class="heart" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78l1.06 1.06L12 21.35l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                                <br>
+                                {{ stream.tweet.likes }}
+                            </button>
+                            </form>
+                               <button onclick="openCreateComment({{ stream.tweet.id }})" class="comment-button" id="comment-button">
+                                    <svg class="comment-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                    </svg>
+                                    <br>
+                                    {{ stream.tweet.comments }}
+                               </button>
+                            <button class="post-button">Share</button>
+                        </div>
+                    </div>
+                {% endfor %}
+            </section>
+        </div>
+    </div>
+     <div class="create-post-container hidden">
+            <div class="create-post-header">
+                <button onclick="openCreatePost()" class="close-btn">&times;</button>
+            </div>
+            <form action="{% url 'create-tweet' %}" method="post" enctype="multipart/form-data" class="create-post-form">
+                {% csrf_token %}
+
+                <textarea name="caption" class="tweet-caption" placeholder="What's happening?"></textarea>
+                <div  class="image-view-container">
+                    <img style="width: 100px; height: 100px;" alt="ss" class="image-view-create-post" src="">
+                </div>
+
+                <div class="image-upload">
+                    <label for="image-input" class="image-upload-label">Choose Image</label>
+                    <input type="file" id="image-input" name="image" class="image-input" accept="image/*">
+        </div>
+
+        <button type="submit" class="post-btn">Post</button>
+    </form>
+</div>
+
+     <div class="create-comment-container hidden">
+            <div class="create-comment-header">
+                <button onclick="openCreateComment(1)" class="close-btn">&times;</button>
+            </div>
+            <form action="" method="post" enctype="multipart/form-data" class="create-comment-form">
+                {% csrf_token %}
+                <textarea name="comment-text" class="comment-caption" placeholder="What's happening?"></textarea>
+                <div  class="image-view-container">
+                    <img style="width: 100px; height: 100px;" alt="ss" class="image-view-create-post" src="">
+                </div>
+
+                <div class="image-upload">
+                    <label for="image-input" class="image-upload-label">Choose Image</label>
+                    <input type="file" id="image-input-comment" name="comment-image" class="image-input" accept="image/*">
+        </div>
+
+        <button type="submit" class="post-btn">Post</button>
+    </form>
+</div>
+    <script>
+        const sidebar = document.getElementsByClassName('sidebar')[0];
+        const coverHide = document.getElementsByClassName('hide-behind')[0];
+        const signOutContainer = document.getElementsByClassName('sign-out-container ')[0];
+        const createPostContainer = document.getElementsByClassName('create-post-container')[0];
+        const messages = document.getElementsByClassName('messages')[0];
+        const createCommentContainer = document.getElementsByClassName('create-comment-container')[0];
+        const createCommentForm = document.getElementsByClassName('create-comment-form')[0];
+        if (typeof messages !== 'undefined') {
+            setTimeout(function() {
+            messages.style.display = 'none';
+            }, 4000);
+        }
+        document.getElementById("image-input").addEventListener("change", event => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    document.getElementsByClassName("image-view-container")[0].style.display = 'flex';
+                    document.getElementsByClassName("image-view-container")[0].style.justifyContent = 'center';
+                    document.getElementsByClassName("image-view-create-post")[0].src = e.target.result;
+                    document.getElementsByClassName("image-view-create-post")[0].style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+                document.getElementById("image-input-comment").addEventListener("change", event => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    document.getElementsByClassName("image-view-container")[0].style.display = 'flex';
+                    document.getElementsByClassName("image-view-container")[0].style.justifyContent = 'center';
+                    document.getElementsByClassName("image-view-create-post")[0].src = e.target.result;
+                    document.getElementsByClassName("image-view-create-post")[0].style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+        function sidebarShow() {
+            sidebar.classList.toggle('active');
+        }
+        function openSignout() {
+            coverHide.classList.toggle('active-hide');
+            signOutContainer.classList.toggle('hidden');
+            signOutContainer.classList.toggle('visible');
+        }
+        function openCreatePost() {
+            createPostContainer.classList.toggle('hidden');
+            coverHide.classList.toggle('active-hide');
+        }
+        function openCreateComment(parent_id) {
+            const baseUrl = "{% url 'reply-tweet' 0 %}".replace('/0/', '/');
+            createCommentForm.action = `${baseUrl}${parent_id}/`;
+            createCommentContainer.classList.toggle('hidden');
+            coverHide.classList.toggle('active-hide');
+        }
+
+        window.onbeforeunload = function() {
+        localStorage.setItem('scrollPos', window.scrollY);
+        };
+            window.onload = function() {
+        // Get the stored scroll position from localStorage
+                let scrollPos = localStorage.getItem('scrollPos');
+
+                // If a scroll position is stored, scroll to that position
+        if (scrollPos) {
+            window.scrollTo(0, scrollPos);
+            // Optionally, clear the scroll position after restoring
+            localStorage.removeItem('scrollPos');
+        }
+    };
+
+        document.addEventListener("DOMContentLoaded", function() {
+
+            const heartButton = document.getElementById("heart-button");
+            heartButton.addEventListener("click", function() {
+                heartButton.classList.toggle("liked");
+            });
+        });
+
+        function show_tweet(tweet_id) {
+            let a = document.createElement('a');
+            const baseUrl = "{% url 'tweet-detail' 0 %}".replace('/0/', '/');
+            a.href = `${baseUrl}${tweet_id}/`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+    </script>
+</body>
+</html>

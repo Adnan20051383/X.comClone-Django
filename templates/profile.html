@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile View</title>
+     <link rel="stylesheet" href="{% static 'css/profile-style.css' %}">
+</head>
+<body>
+            <aside class="sidebar">
+            <div class="logo">
+                <img style="width: 100px; height: 100px; border-radius: 5px" src="{% static 'img/default.png' %}">
+            </div>
+            <nav class="navigation">
+                <a href="{% url 'home' %}" class="nav-link">Home</a>
+                {% if notifications > 0 %}
+                <a href="{% url 'notifications' %}" class="nav-link">Notification <p class="unread-notif">{{ notifications }}</p></a>
+                {% else %}
+                <a href="{% url 'notifications' %}" class="nav-link">Notification</a>
+                {% endif %}
+                <a href="{% url 'profile' username=authenticated_user.username %}" class="nav-link">Profile</a>
+                <a href="#" class="nav-link">Messages</a>
+                <a href="#" class="nav-link">Settings</a>
+                <a onclick="openSignout()" href="#" class="nav-link">Logout</a>
+
+                <div class="user-info">
+                    <div class="user-info-img">
+                        <img style="width: 50px; height: 50px; border-radius: 50%" src="{{authenticated_user.profile.image.url}}" alt="llll">
+                    </div>
+                    <div class="user-info-text">
+                        <h4>{{ authenticated_user.profile.first_name}} {{ authenticated_user.profile.last_name }}</h4>
+                        <h6>@{{ authenticated_user.username }}</h6>
+                    </div>
+                </div>
+            </nav>
+            <div class="hide-behind">
+            </div>
+        </aside>
+        <div class="sign-out-container hidden">
+            <h3>Do You Want To Log Out?</h3>
+            <div style="display: flex; justify-content: space-evenly; align-items: center;">
+                <form method="post" action="{% url 'sign-out' %}"> {% csrf_token %}<button type="submit" class="sign-out-btn leave-btn">Yes</button>
+                </form>
+                <button onclick="openSignout()" class="sign-out-btn no-leave-btn">No</button>
+            </div>
+        </div>
+        <div onclick="sidebarShow()" class="sidebar-toggle" id="sidebarToggle">&#9776;</div>
+    <div class="profile-container">
+        <div class="profile-header">
+            <img src="..{{image.url}}" alt="Cover Photo" class="cover-photo">
+            <div class="profile-image-container">
+                <img src="..{{image.url}}" alt="Profile Image" class="profile-image">
+            </div>
+        </div>
+        <div class="profile-details">
+            {% if profile.first_name != None %}
+            <h2 class="profile-name">{{ profile.first_name }}</h2>
+            {% else %}
+            <h2 class="profile-name">{{ user.username }}</h2>
+            {% endif %}
+            <p class="profile-username">@{{user.username}}</p>
+            <p class="profile-bio">{{ bio }}</p>
+            <div class="profile-stats">
+                <div class="stat">
+                    <span class="stat-number">{{ user_tweets.count }}</span>
+                    <span class="stat-label">Tweets</span>
+                </div>
+                <div class="stat">
+                    <a href="{% url 'show-followers' username=user.username %}"><span class="stat-number">{{ followers }}</span></a>
+                    <a href="{% url 'show-followers' username=user.username %}"><span class="stat-label">Followers</span></a>
+                </div>
+                <div class="stat">
+                    <a href="{% url 'show-followings' username=user.username %}"><span class="stat-number">{{ followings }}</span></a>
+                    <a href="{% url 'show-followings' username=user.username %}"><span class="stat-label">Followings</span></a>
+                </div>
+            </div>
+            {% if authenticated_user != user %}
+            <form method="post" action="{% url 'follow' following=user.username  %}">
+                {% csrf_token %}
+                {% if follow_status %}
+                <button type="submit" class="followed-button">Followed</button>
+                {% else %}
+                <button type="submit" class="follow-button">Follow</button>
+                {% endif %}
+            </form>
+            {% else %}
+            <form method="get" action="{% url 'edit-profile' %}">
+                {% csrf_token %}
+                <button type="submit" class="follow-button">Edit Profile</button>
+            </form>
+            {% endif %}
+    </div>
+    </div>
+         {% for tweet in user_tweets %}
+            <div  class="post-container">
+                <div class="post-header">
+                    <p>{{ tweet.time_difference_from_now }}</p>
+                </div>
+                <div class="post-content">
+                    <p onclick="show_tweet({{ tweet.id }})">{{ tweet.tweet }}</p>
+                    {% if tweet.image %}
+                    <img onclick="show_tweet({{ tweet.id }})" style="height: 400px" src="..{{ tweet.image.url }}" alt="Post Image">
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+    <script>
+        const sidebar = document.getElementsByClassName('sidebar')[0];
+        const coverHide = document.getElementsByClassName('hide-behind')[0];
+        const signOutContainer = document.getElementsByClassName('sign-out-container ')[0];
+        const messages = document.getElementsByClassName('messages')[0];
+        if (typeof messages !== 'undefined') {
+            setTimeout(function() {
+            messages.style.display = 'none';
+            }, 4000);
+        }
+        document.getElementById("image-input").addEventListener("change", event => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    document.getElementsByClassName("image-view-container")[0].style.display = 'flex';
+                    document.getElementsByClassName("image-view-container")[0].style.justifyContent = 'center';
+                    document.getElementsByClassName("image-view-create-post")[0].src = e.target.result;
+                    document.getElementsByClassName("image-view-create-post")[0].style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+        function sidebarShow() {
+            sidebar.classList.toggle('active');
+        }
+        function openSignout() {
+            coverHide.classList.toggle('active-hide');
+            signOutContainer.classList.toggle('hidden');
+            signOutContainer.classList.toggle('visible');
+        }
+
+        window.onbeforeunload = function() {
+        localStorage.setItem('scrollPos', window.scrollY);
+        };
+            window.onload = function() {
+        // Get the stored scroll position from localStorage
+                let scrollPos = localStorage.getItem('scrollPos');
+
+                // If a scroll position is stored, scroll to that position
+        if (scrollPos) {
+            window.scrollTo(0, scrollPos);
+            // Optionally, clear the scroll position after restoring
+            localStorage.removeItem('scrollPos');
+        }
+    };
+
+        document.addEventListener("DOMContentLoaded", function() {
+
+            const heartButton = document.getElementById("heart-button");
+            heartButton.addEventListener("click", function() {
+                heartButton.classList.toggle("liked");
+            });
+        });
+
+        function show_tweet(tweet_id) {
+            let a = document.createElement('a');
+            const baseUrl = "{% url 'tweet-detail' 0 %}".replace('/0/', '/');
+            a.href = `${baseUrl}${tweet_id}/`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+    </script>
+</body>
+</html>
