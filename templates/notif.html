@@ -8,6 +8,46 @@
     <link rel="stylesheet" href="{% static 'css/notif-style.css' %}">
 </head>
 <body>
+
+                <aside class="sidebar">
+            <div class="logo">
+                <img style="width: 100px; height: 100px; border-radius: 5px" src="{% static 'img/default.png' %}">
+            </div>
+            <nav class="navigation">
+                <a href="{% url 'home' %}" class="nav-link">Home</a>
+                {% if notifications > 0 %}
+                <a href="{% url 'notifications' %}" class="nav-link">Notification <p class="unread-notif">{{ notifications }}</p></a>
+                {% else %}
+                <a href="{% url 'notifications' %}" class="nav-link">Notification</a>
+                {% endif %}
+                <a href="{% url 'profile' username=request.user.username %}" class="nav-link">Profile</a>
+                <a href="#" class="nav-link">Messages</a>
+                <a href="#" class="nav-link">Settings</a>
+                <a onclick="openSignout()" href="#" class="nav-link">Logout</a>
+
+                <div class="user-info">
+                    <div class="user-info-img">
+                        <img style="width: 50px; height: 50px; border-radius: 50%" src="{{request.user.profile.image.url}}" alt="llll">
+                    </div>
+                    <div class="user-info-text">
+                        <h4>{{ request.user.profile.first_name}} {{ request.user.profile.last_name }}</h4>
+                        <h6>@{{ request.user.username }}</h6>
+                    </div>
+                </div>
+            </nav>
+            <div class="hide-behind">
+            </div>
+        </aside>
+        <div class="sign-out-container hidden">
+            <h3>Do You Want To Log Out?</h3>
+            <div style="display: flex; justify-content: space-evenly; align-items: center;">
+                <form method="post" action="{% url 'sign-out' %}"> {% csrf_token %}<button type="submit" class="sign-out-btn leave-btn">Yes</button>
+                </form>
+                <button onclick="openSignout()" class="sign-out-btn no-leave-btn">No</button>
+            </div>
+        </div>
+        <div onclick="sidebarShow()" class="sidebar-toggle" id="sidebarToggle">&#9776;</div>
+
     <div class="container">
             <header>
                 <h1>Notifications</h1>
@@ -36,5 +76,37 @@
                 {% endfor %}
         </div>
       </div>
+
+
+        <script>
+        const sidebar = document.getElementsByClassName('sidebar')[0];
+        const coverHide = document.getElementsByClassName('hide-behind')[0];
+        const signOutContainer = document.getElementsByClassName('sign-out-container ')[0];
+        const messages = document.getElementsByClassName('messages')[0];
+        function sidebarShow() {
+            sidebar.classList.toggle('active');
+        }
+        function openSignout() {
+            coverHide.classList.toggle('active-hide');
+            signOutContainer.classList.toggle('hidden');
+            signOutContainer.classList.toggle('visible');
+        }
+
+        window.onbeforeunload = function() {
+        localStorage.setItem('scrollPos', window.scrollY);
+        };
+            window.onload = function() {
+        // Get the stored scroll position from localStorage
+                let scrollPos = localStorage.getItem('scrollPos');
+
+                // If a scroll position is stored, scroll to that position
+        if (scrollPos) {
+            window.scrollTo(0, scrollPos);
+            // Optionally, clear the scroll position after restoring
+            localStorage.removeItem('scrollPos');
+        }
+    };
+
+    </script>
 </body>
 </html>

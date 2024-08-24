@@ -18,9 +18,8 @@ def create_tweet(request):
         tweet.save()
     else:
         message = messages.add_message(request, messages.ERROR, 'No caption or image. The Tweet Is Not Created!')
-        previous_url = request.META.get('HTTP_REFERER', '/sss/')
-        return redirect(previous_url)
-    return redirect('home')
+    previous_url = request.META.get('HTTP_REFERER', '/sss/')
+    return redirect(previous_url)
 
 
 @login_required

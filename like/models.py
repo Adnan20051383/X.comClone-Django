@@ -25,8 +25,9 @@ class Like(models.Model):
         like = instance
         sender_user = like.liker
         user = like.tweet.user
-        notif = Notification.objects.get(sender=sender_user, user=user, tweet=like.tweet, notification_type=2)
-        notif.delete()
+        if Notification.objects.filter(sender=sender_user, user=user, tweet=like.tweet, notification_type=2).exists():
+            notif = Notification(sender=sender_user, user=user, tweet=like.tweet, notification_type=2)
+            notif.delete()
 
     def time_difference_from_now(self):
         now = timezone.now()  # This ensures now is timezone-aware

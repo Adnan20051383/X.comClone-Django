@@ -21,8 +21,9 @@ class Follow(models.Model):
         follow = instance
         sender_user = follow.follower
         user = follow.following
-        notif = Notification.objects.filter(sender=sender_user, notification_type=1, user=user)
-        notif.delete()
+        if Notification.objects.filter(sender=sender_user, notification_type=1, user=user).exists():
+            notif = Notification.objects.get(sender=sender_user, notification_type=1, user=user)
+            notif.delete()
 
 
 post_save.connect(Follow.user_following, sender=Follow)

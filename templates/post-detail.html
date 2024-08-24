@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" href="{% static 'css/post-detail-style.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
 <div class="container">
@@ -58,7 +59,12 @@
     <div class="main-content">
                  <header class="header">
                 <input type="text" class="search-bar" placeholder="Search users...">
-            </header>
+                     <form id="search-form" method="get" action="">
+                <button onclick="setSearchKeyword()" class="search-button">
+                <i class="search-icon bi bi-search"></i>
+                </button>
+                </form>
+                </header>
    <div style="margin-top: 2rem; height: fit-content;" class="post-container">
                     <div class="post-header">
                         <div style="display: flex; justify-content: space-evenly; align-items: center; gap: 1rem">
@@ -246,7 +252,11 @@
             a.click();
             document.body.removeChild(a);
         }
-
+         function setSearchKeyword() {
+            keyword = document.getElementsByClassName('search-bar')[0].value;
+             const baseUrl = "{% url 'search_result' 0 %}".replace('/0/', '/');
+            document.getElementById('search-form').action = `${baseUrl}${keyword}/`;
+        }
 
     </script>
 </body>

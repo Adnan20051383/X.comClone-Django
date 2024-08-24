@@ -12,6 +12,7 @@ urlpatterns = [
     path('sign-out/', auth_views.LogoutView.as_view(template_name="sign-out.html"), name='sign-out'),
     path('profile/<str:username>', views.profile_view, name='profile'),
     path('edit-profile/', views.edit_profile, name='edit-profile'),
+    path('search-result/<str:keyword>/', views.search_result, name='search_result'),
 ]
 
 

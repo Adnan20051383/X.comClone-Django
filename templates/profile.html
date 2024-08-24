@@ -8,6 +8,16 @@
      <link rel="stylesheet" href="{% static 'css/profile-style.css' %}">
 </head>
 <body>
+    {% if message %}
+    <div class="messages">
+
+            {% for msg in message %}
+                <h4>{{ msg }}</h4>
+            {% endfor %}
+    </div>
+    {% endif %}
+    <button onmouseout="showExplanation()" onmouseover="showExplanation()" onclick="openCreatePost()" type="submit" class="add-tweet-btn">+</button>
+    <div class="add-tweet-div add-tweet-explanation">Add A Tweet</div>
             <aside class="sidebar">
             <div class="logo">
                 <img style="width: 100px; height: 100px; border-radius: 5px" src="{% static 'img/default.png' %}">
@@ -105,10 +115,31 @@
                 </div>
             </div>
             {% endfor %}
+         <div class="create-post-container hidden">
+            <div class="create-post-header">
+                <button onclick="openCreatePost()" class="close-btn">&times;</button>
+            </div>
+            <form action="{% url 'create-tweet' %}" method="post" enctype="multipart/form-data" class="create-post-form">
+                {% csrf_token %}
+
+                <textarea name="caption" class="tweet-caption" placeholder="What's happening?"></textarea>
+                <div  class="image-view-container">
+                    <img style="width: 100px; height: 100px;" alt="ss" class="image-view-create-post" src="">
+                </div>
+
+                <div class="image-upload">
+                    <label for="image-input" class="image-upload-label">Choose Image</label>
+                    <input type="file" id="image-input" name="image" class="image-input" accept="image/*">
+        </div>
+
+        <button type="submit" class="post-btn">Post</button>
+    </form>
+</div>
     <script>
         const sidebar = document.getElementsByClassName('sidebar')[0];
         const coverHide = document.getElementsByClassName('hide-behind')[0];
         const signOutContainer = document.getElementsByClassName('sign-out-container ')[0];
+        const createPostContainer = document.getElementsByClassName('create-post-container')[0];
         const messages = document.getElementsByClassName('messages')[0];
         if (typeof messages !== 'undefined') {
             setTimeout(function() {
@@ -169,7 +200,14 @@
             a.click();
             document.body.removeChild(a);
         }
-
+        function openCreatePost() {
+            createPostContainer.classList.toggle('hidden');
+            coverHide.classList.toggle('active-hide');
+        }
+        function showExplanation() {
+            document.getElementsByClassName('add-tweet-div')[0].classList.toggle('add-tweet-explanation-active');
+            document.getElementsByClassName('add-tweet-div')[0].classList.toggle('add-tweet-explanation');
+        }
     </script>
 </body>
 </html>

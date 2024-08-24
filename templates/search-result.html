@@ -2,7 +2,7 @@
 <head>
     {% load static %}
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-    <title>{{title}}</title>
+    <title>Search Result</title>
     <link rel="stylesheet" href="{% static 'css/followers-followings-list-style.css' %}">
 </head>
 <body>
@@ -11,7 +11,7 @@
                 <img style="width: 100px; height: 100px; border-radius: 5px" src="{% static 'img/default.png' %}">
             </div>
             <nav class="navigation">
-                <a href="#" class="nav-link">Home</a>
+                <a href="{% url 'home' %}" class="nav-link">Home</a>
                 {% if notifications > 0 %}
                 <a href="{% url 'notifications' %}" class="nav-link">Notification <p class="unread-notif">{{ notifications }}</p></a>
                 {% else %}
@@ -24,7 +24,7 @@
 
                 <div class="user-info">
                     <div class="user-info-img">
-                        <img style="width: 50px; height: 50px; border-radius: 50%" src="..{{request.user.profile.image.url}}" alt="llll">
+                        <img style="width: 50px; height: 50px; border-radius: 50%" src="{{request.user.profile.image.url}}" alt="llll">
                     </div>
                     <div class="user-info-text">
                         <h4>{{ request.user.profile.first_name}} {{ request.user.profile.last_name }}</h4>
@@ -46,16 +46,15 @@
         <div onclick="sidebarShow()" class="sidebar-toggle" id="sidebarToggle">&#9776;</div>
     <div class="followers-list">
         <div class="header">
-            <h1>{{title}}</h1>
-            <h3>number of {{title}} : {{follow_count}}</h3>
+            <h1>Search result for [{{ keyword }}]</h1>
         </div>
-    {% for follower in followers %}
+    {% for user in users %}
     <div class="follower-item">
-        <a href="{% url 'profile' username=follower.username %}">
-            <img src="..{{ follower.profile.image.url }}" alt=" follower.username's profile image" class="profile-image">
+        <a href="{% url 'profile' username=user.username %}">
+            <img src="{{ user.profile.image.url }}" alt=" user.username's profile image" class="profile-image">
         </a>
         <div class="follower-info">
-            <a href="{% url 'profile' username=follower.username %}" class="username">{{ follower.username }}</a>
+            <a href="{% url 'profile' username=user.username %}" class="username">{{ user.username }}</a>
         </div>
     </div>
     {% endfor %}
@@ -94,6 +93,4 @@
 </div>
 </body>
 </html>
-
-
 

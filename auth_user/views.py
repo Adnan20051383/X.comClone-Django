@@ -10,6 +10,18 @@ from follow.models import Follow
 from like.models import Like
 from notif.models import Notification
 from tweet.models import Tweet, Stream
+from difflib import SequenceMatcher
+from difflib import SequenceMatcher
+
+
+def similarity(word1, word2):
+    return SequenceMatcher(None, word1.lower(), word2.lower()).ratio()
+
+
+def search_and_sort(words_list, keyword):
+    similar_words = [(word, similarity(word, keyword)) for word in words_list]
+    sorted_similar_words = sorted(similar_words, key=lambda x: x[1], reverse=True)
+    return sorted_similar_words
 
 
 def signUp(request):
@@ -38,8 +50,9 @@ def profile_view(request, username):
     followers = Follow.objects.filter(following=user).count()
     followings = Follow.objects.filter(follower=user).count()
     fallow_status = Follow.objects.filter(follower=request.user, following=user)
-    notifications = Notification.objects.filter(user=request.user, is_seen=False)
-    user_tweets = Tweet.objects.filter(user=user, parent_id=None)
+    notifications = Notification.objects.filter(user=request.user, is_seen=False).count()
+    user_tweets = Tweet.objects.filter(user=user, parent_id=None).order_by('-created_at')
+    message = list(messages.get_messages(request))
     bio = profile.bio
     image = profile.image
     context = {
@@ -51,8 +64,9 @@ def profile_view(request, username):
         'user': user,
         'follow_status': fallow_status,
         'authenticated_user': request.user,
-        'notifications': notifications.count(),
+        'notifications': notifications,
         'user_tweets': user_tweets,
+        'message': message,
     }
     return render(request, 'profile.html', context)
 
@@ -108,3 +122,24 @@ def home(request):
         'liked_tweets': liked_tweets,
     }
     return render(request, 'home.html', context)
+
+
+def search_result(request, keyword):
+    if keyword:
+        usernames = []
+        for user in User.objects.all():
+            usernames.append(user.username)
+        search_res = search_and_sort(usernames, keyword)
+        users = []
+        for username in search_res:
+            if username[1] != 0:
+                users.append(User.objects.get(username=username[0]))
+
+        context = {
+            'users': users,
+            'keyword': keyword,
+        }
+        return render(request, 'search-result.html', context)
+    else:
+        previous_url = request.META.get('HTTP_REFERER', '/sss/')
+        return redirect(previous_url)
