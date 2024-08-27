@@ -26,7 +26,7 @@ class Like(models.Model):
         sender_user = like.liker
         user = like.tweet.user
         if Notification.objects.filter(sender=sender_user, user=user, tweet=like.tweet, notification_type=2).exists():
-            notif = Notification(sender=sender_user, user=user, tweet=like.tweet, notification_type=2)
+            notif = Notification.objects.get(sender=sender_user, user=user, tweet=like.tweet, notification_type=2)
             notif.delete()
 
     def time_difference_from_now(self):

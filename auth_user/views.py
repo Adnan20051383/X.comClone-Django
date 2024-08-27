@@ -134,10 +134,11 @@ def search_result(request, keyword):
         for username in search_res:
             if username[1] != 0:
                 users.append(User.objects.get(username=username[0]))
-
+        notifications = Notification.objects.filter(user=request.user, is_seen=False).count()
         context = {
             'users': users,
             'keyword': keyword,
+            'notifications': notifications,
         }
         return render(request, 'search-result.html', context)
     else:

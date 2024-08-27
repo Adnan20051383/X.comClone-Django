@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 
 from follow.models import Follow
+from notif.models import Notification
 
 
 def follow(request, following):
@@ -26,7 +27,8 @@ def show_followers(request, username):
     for follower in followers_follow:
         followers.append(follower.follower)
     followers_count = Follow.objects.filter(following=user).count()
-    context = {'followers': followers, 'follow_count': followers_count, 'title': 'Followers'}
+    notifications = Notification.objects.filter(user=request.user, is_seen=False).count()
+    context = {'followers': followers, 'follow_count': followers_count, 'title': 'Followers', 'notifications': notifications}
     return render(request, 'followers-followings-list.html', context)
 
 
@@ -37,6 +39,7 @@ def show_followings(request, username):
     for following in followings_follow:
         followings.append(following.following)
     followings_count = Follow.objects.filter(follower=user).count()
-    context = {'followers': followings, 'follow_count': followings_count, 'title': 'Followings'}
+    notifications = Notification.objects.filter(user=request.user, is_seen=False).count()
+    context = {'followers': followings, 'follow_count': followings_count, 'title': 'Followings', 'notifications': notifications}
     return render(request, 'followers-followings-list.html', context)
 

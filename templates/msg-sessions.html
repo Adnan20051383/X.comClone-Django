@@ -1,15 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-{% load static %}
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notifications</title>
-    <link rel="stylesheet" href="{% static 'css/notif-style.css' %}">
+    {% load static %}
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="{% static 'css/followers-followings-list-style.css' %}">
 </head>
 <body>
-
-                <aside class="sidebar">
+            <aside class="sidebar">
             <div class="logo">
                 <img style="width: 100px; height: 100px; border-radius: 5px" src="{% static 'img/default.png' %}">
             </div>
@@ -26,7 +23,7 @@
 
                 <div class="user-info">
                     <div class="user-info-img">
-                        <img style="width: 50px; height: 50px; border-radius: 50%" src="{{request.user.profile.image.url}}" alt="llll">
+                        <img style="width: 50px; height: 50px; border-radius: 50%" src="..{{request.user.profile.image.url}}" alt="llll">
                     </div>
                     <div class="user-info-text">
                         <h4>{{ request.user.profile.first_name}} {{ request.user.profile.last_name }}</h4>
@@ -47,39 +44,27 @@
         </div>
         <div onclick="sidebarShow()" class="sidebar-toggle" id="sidebarToggle">&#9776;</div>
 
-    <div class="container">
-            <header>
-                <h1>Notifications</h1>
-            </header>
-            <div class="notifications">
-                {% for notif in notifications %}
-                <div class="notification">
-                    <div class="icon">
-                        <img src="..{{ notif.sender.profile.image.url }}" alt="Notification Icon">
-                    </div>
-                    <div class="content">
-                        {% if notif.notification_type == 1 %}
-                        <p class="message"><a style="text-decoration: none" href="{% url 'profile' username=notif.sender.username %}">{{ notif.sender.username }}</a> followed you.</p>
-                        {% elif notif.notification_type == 2 %}
-                        <p class="message"><a style="text-decoration: none" href="{% url 'profile' username=notif.sender.username %}">{{ notif.sender.username }}</a> liked your <a style="text-decoration: none" href="{% url 'tweet-detail' tweet_id=notif.tweet.id %}">tweet</a>.</p>
-                        {% elif notif.notification_type == 3 and notif.tweet.parent_id %}
-                        <p class="message"><a style="text-decoration: none" href="{% url 'profile' username=notif.sender.username %}">{{ notif.sender.username }}</a> <a style="text-decoration: none" href="{% url 'tweet-detail' tweet_id=notif.tweet.id %}">replied</a> on the <a style="text-decoration: none" href="{% url 'tweet-detail' tweet_id=notif.tweet.parent_id %}">tweet</a> </p>
-                        {% elif notif.notification_type == 4 %}
-                        <p class="message"><a style="text-decoration: none" href="{% url 'profile' username=notif.sender.username %}">{{ notif.sender.username }}</a> <a style="text-decoration: none" href="{% url 'show-chat' receiver=notif.sender.id %}">messaged</a> you.</p>
-                        {% endif %}
-                        <p class="time">{{ notif.time_difference_from_now }}</p>
-                    </div>
-                    <form method="post" action="{% url 'delete-notif' notif_id=notif.id %}" class="delete-notif">
-                        {% csrf_token %}
-                        <button type="submit">X</button>
-                    </form>
-                </div>
-                {% endfor %}
+
+    <div class="followers-list">
+        <div class="header">
+            <h1>Messages</h1>
         </div>
-      </div>
+    {% for msg_session, sender, new_msg_num in zipped %}
+    <div class="follower-item">
+        <a href="{% url 'show-chat' receiver=sender.id %}">
+            <img src="{{ sender.profile.image.url }}" alt="username's profile image" class="profile-image">
+        </a>
+        <div class="follower-info">
+            <a href="{% url 'show-chat' receiver=sender.id %}" class="username">{{ sender.username }}</a>
+        </div>
+        {% if new_msg_num > 0 %}
+        <p class="unread-msg">  {{ new_msg_num }} </p>
+        {% endif %}
+    </div>
+    {% endfor %}
 
 
-        <script>
+         <script>
         const sidebar = document.getElementsByClassName('sidebar')[0];
         const coverHide = document.getElementsByClassName('hide-behind')[0];
         const signOutContainer = document.getElementsByClassName('sign-out-container ')[0];
@@ -109,5 +94,8 @@
     };
 
     </script>
+</div>
 </body>
 </html>
+
+

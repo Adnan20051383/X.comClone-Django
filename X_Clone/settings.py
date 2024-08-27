@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'notif.apps.NotifConfig',
     'tweet.apps.TweetConfig',
     'like.apps.LikeConfig',
+    'msg.apps.MsgConfig',
 ]
 
 MIDDLEWARE = [

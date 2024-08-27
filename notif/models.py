@@ -9,7 +9,7 @@ from tweet.models import Tweet
 
 
 class Notification(models.Model):
-    NOTIFICATION_CHOICES = ((1, 'follow'), (2, 'like'), (3, 'comment'))
+    NOTIFICATION_CHOICES = ((1, 'follow'), (2, 'like'), (3, 'comment'), (4, 'msg'))
 
     tweet = models.ForeignKey(Tweet, null=True, blank=True, on_delete=models.CASCADE)
     sender = models.ForeignKey(User, on_delete=CASCADE, related_name='sender_notif')

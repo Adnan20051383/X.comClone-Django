@@ -30,6 +30,7 @@ urlpatterns = [
     path('notifications/', include('notif.urls')),
     path('tweets/', include('tweet.urls')),
     path('likes/', include('like.urls')),
+    path('msg/', include('msg.urls'))
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -11,15 +11,14 @@
                 <img style="width: 100px; height: 100px; border-radius: 5px" src="{% static 'img/default.png' %}">
             </div>
             <nav class="navigation">
-                <a href="#" class="nav-link">Home</a>
+                <a href="{% url 'home' %}" class="nav-link">Home</a>
                 {% if notifications > 0 %}
                 <a href="{% url 'notifications' %}" class="nav-link">Notification <p class="unread-notif">{{ notifications }}</p></a>
                 {% else %}
                 <a href="{% url 'notifications' %}" class="nav-link">Notification</a>
                 {% endif %}
                 <a href="{% url 'profile' username=request.user.username %}" class="nav-link">Profile</a>
-                <a href="#" class="nav-link">Messages</a>
-                <a href="#" class="nav-link">Settings</a>
+                <a href="{% url 'msg-session' %}" class="nav-link">Messages</a>
                 <a onclick="openSignout()" href="#" class="nav-link">Logout</a>
 
                 <div class="user-info">

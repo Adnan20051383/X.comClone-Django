@@ -16,8 +16,12 @@
             {% endfor %}
     </div>
     {% endif %}
+    {% if request.user.username == user.username %}
     <button onmouseout="showExplanation()" onmouseover="showExplanation()" onclick="openCreatePost()" type="submit" class="add-tweet-btn">+</button>
     <div class="add-tweet-div add-tweet-explanation">Add A Tweet</div>
+    {% else %}
+    <button onclick="openMsg({{ user.id }})" type="submit" class="add-msg-btn">Send Message</button>
+    {% endif %}
             <aside class="sidebar">
             <div class="logo">
                 <img style="width: 100px; height: 100px; border-radius: 5px" src="{% static 'img/default.png' %}">
@@ -30,8 +34,7 @@
                 <a href="{% url 'notifications' %}" class="nav-link">Notification</a>
                 {% endif %}
                 <a href="{% url 'profile' username=authenticated_user.username %}" class="nav-link">Profile</a>
-                <a href="#" class="nav-link">Messages</a>
-                <a href="#" class="nav-link">Settings</a>
+                <a href="{% url 'msg-session' %}" class="nav-link">Messages</a>
                 <a onclick="openSignout()" href="#" class="nav-link">Logout</a>
 
                 <div class="user-info">
@@ -146,20 +149,6 @@
             messages.style.display = 'none';
             }, 4000);
         }
-        document.getElementById("image-input").addEventListener("change", event => {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-
-                reader.onload = function(e) {
-                    document.getElementsByClassName("image-view-container")[0].style.display = 'flex';
-                    document.getElementsByClassName("image-view-container")[0].style.justifyContent = 'center';
-                    document.getElementsByClassName("image-view-create-post")[0].src = e.target.result;
-                    document.getElementsByClassName("image-view-create-post")[0].style.display = 'block';
-                }
-                reader.readAsDataURL(file);
-            }
-        });
         function sidebarShow() {
             sidebar.classList.toggle('active');
         }
@@ -196,6 +185,14 @@
             let a = document.createElement('a');
             const baseUrl = "{% url 'tweet-detail' 0 %}".replace('/0/', '/');
             a.href = `${baseUrl}${tweet_id}/`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+        function openMsg(user_id) {
+            let a = document.createElement('a');
+            const baseUrl = "{% url 'show-chat' 0 %}".replace('/0/', '/');
+            a.href = `${baseUrl}${user_id}/`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);

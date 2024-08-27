@@ -23,15 +23,14 @@
                 <img style="width: 100px; height: 100px; border-radius: 5px" src="{% static 'img/default.png' %}">
             </div>
             <nav class="navigation">
-                <a href="#" class="nav-link">Home</a>
+                <a href="{% url 'home' %}" class="nav-link">Home</a>
                 {% if notifications > 0 %}
                 <a href="{% url 'notifications' %}" class="nav-link">Notification <p class="unread-notif">{{ notifications }}</p></a>
                 {% else %}
                 <a href="{% url 'notifications' %}" class="nav-link">Notification</a>
                 {% endif %}
                 <a href="{% url 'profile' username=authenticated_user.username %}" class="nav-link">Profile</a>
-                <a href="#" class="nav-link">Messages</a>
-                <a href="#" class="nav-link">Settings</a>
+                <a href="{% url 'msg-session' %}" class="nav-link">Messages</a>
                 <a onclick="openSignout()" href="#" class="nav-link">Logout</a>
 
                 <div class="user-info">
@@ -242,7 +241,10 @@
             document.body.removeChild(a);
         }
         function setSearchKeyword() {
-            keyword = document.getElementsByClassName('search-bar')[0].value;
+            let keyword = document.getElementsByClassName('search-bar')[0].value;
+            if (keyword === '') {
+                keyword = 'abcdefghijklmnopqrstuvwxyz1234567890';
+            }
              const baseUrl = "{% url 'search_result' 0 %}".replace('/0/', '/');
             document.getElementById('search-form').action = `${baseUrl}${keyword}/`;
         }

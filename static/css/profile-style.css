@@ -343,7 +343,27 @@ body {
 
 }
 
+.add-msg-btn {
+    position: fixed;
+    top: 2%;
+    right: 2%;
+    border: none;
+    background-color: #3939ba;
+    border-radius: 7px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.7rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease-out;
+    z-index: 11;
+}
 
+.add-msg-btn:hover {
+    opacity: 0.6;
+}
 .add-tweet-explanation {
     display: none;
 }
